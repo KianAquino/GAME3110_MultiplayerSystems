@@ -126,13 +126,6 @@ static public class AssignmentPart1
             GameContent.RefreshUI();
         }
         else Debug.LogWarning("No save data to load.");
-
-        // PartyCharacter pc = new PartyCharacter(1, 10, 10, 10, 10, 10);
-        // GameContent.partyCharacters.AddLast(pc);
-        // pc = new PartyCharacter(2, 11, 11, 11, 11, 11);
-        // GameContent.partyCharacters.AddLast(pc);
-        // pc = new PartyCharacter(3, 12, 12, 12, 12, 12);
-        // GameContent.partyCharacters.AddLast(pc);
     }
 
 }
@@ -149,7 +142,7 @@ static public class AssignmentPart1
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
