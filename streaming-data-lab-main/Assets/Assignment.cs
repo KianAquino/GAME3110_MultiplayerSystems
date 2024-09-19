@@ -97,6 +97,8 @@ static public class AssignmentPart1
             sw.WriteLine(JsonUtility.ToJson(pc));
         }
 
+        Debug.Log("Party Saved!");
+
         sw.Close();
     }
 
@@ -104,14 +106,33 @@ static public class AssignmentPart1
     {
         GameContent.partyCharacters.Clear();
 
-        PartyCharacter pc = new PartyCharacter(1, 10, 10, 10, 10, 10);
-        GameContent.partyCharacters.AddLast(pc);
-        pc = new PartyCharacter(2, 11, 11, 11, 11, 11);
-        GameContent.partyCharacters.AddLast(pc);
-        pc = new PartyCharacter(3, 12, 12, 12, 12, 12);
-        GameContent.partyCharacters.AddLast(pc);
+        string path = Application.persistentDataPath + "/party.data";
 
-        GameContent.RefreshUI();
+        if (File.Exists(path))
+        {
+            StreamReader sr = new StreamReader(path);
+
+            while (!sr.EndOfStream)
+            {
+                PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(sr.ReadLine());
+                pc.EquipmentDeserialization();
+                GameContent.partyCharacters.AddLast(pc);
+            }
+
+            Debug.Log("Party Loaded!");
+
+            sr.Close();
+
+            GameContent.RefreshUI();
+        }
+        else Debug.LogWarning("No save data to load.");
+
+        // PartyCharacter pc = new PartyCharacter(1, 10, 10, 10, 10, 10);
+        // GameContent.partyCharacters.AddLast(pc);
+        // pc = new PartyCharacter(2, 11, 11, 11, 11, 11);
+        // GameContent.partyCharacters.AddLast(pc);
+        // pc = new PartyCharacter(3, 12, 12, 12, 12, 12);
+        // GameContent.partyCharacters.AddLast(pc);
     }
 
 }
