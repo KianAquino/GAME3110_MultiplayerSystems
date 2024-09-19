@@ -4,8 +4,8 @@ This RPG data streaming assignment was created by Fernando Restituto with
 pixel RPG characters created by Sean Browning.
 */
 
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 
@@ -49,6 +49,19 @@ public partial class PartyCharacter
 
     public LinkedList<int> equipment;
 
+    // List for Json serialization/deserialization
+    public List<int> equipmentList;
+
+    public void EquipmentSerialization()
+    {
+        equipmentList = new List<int>(equipment);
+    }
+
+    public void EquipmentDeserialization()
+    {
+        equipment = new LinkedList<int>(equipmentList);
+    }
+
 }
 
 
@@ -75,10 +88,16 @@ static public class AssignmentPart1
 
     static public void SavePartyButtonPressed()
     {
+        string path = Application.persistentDataPath + "/party.data";
+        StreamWriter sw = new StreamWriter(path);
+
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            Debug.Log("PC class id == " + pc.classID);
+            pc.EquipmentSerialization();
+            sw.WriteLine(JsonUtility.ToJson(pc));
         }
+
+        sw.Close();
     }
 
     static public void LoadPartyButtonPressed()
