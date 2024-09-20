@@ -267,6 +267,22 @@ static public class AssignmentPart2
 
     static public void DeletePartyButtonPressed()
     {
+        string file = Application.persistentDataPath + $"/{currentParty}.data";
+
+        if (!File.Exists(file))
+        {
+            Debug.Log("No party to delete.");
+            Debug.Log($"Attemped -> {file}");
+            return;
+        }
+
+        GetListOfPartyNames().Remove(currentParty);
+
+        File.Delete(file);
+
+        Debug.Log($"Deleted: {file}");
+
+        GameContent.RerollParty();
         GameContent.RefreshUI();
     }
 
