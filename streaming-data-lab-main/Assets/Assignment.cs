@@ -6,6 +6,7 @@ pixel RPG characters created by Sean Browning.
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 
@@ -183,12 +184,18 @@ static public class AssignmentPart2
 
     static List<string> listOfPartyNames;
 
+    static string currentParty;
+
     static public void GameStart()
     {
-        listOfPartyNames = new List<string>();
-        listOfPartyNames.Add("sample 1");
-        listOfPartyNames.Add("sample 2");
-        listOfPartyNames.Add("sample 3");
+        // Get all save data addresses
+        listOfPartyNames = Directory.GetFiles(Application.persistentDataPath, "*.data").ToList();
+
+        // Cut down to only the names
+        for (int i = 0; i < listOfPartyNames.Count; i++)
+        {
+            listOfPartyNames[i] = Path.GetFileNameWithoutExtension(listOfPartyNames[i]).Trim();
+        }
 
         GameContent.RefreshUI();
     }
@@ -200,11 +207,59 @@ static public class AssignmentPart2
 
     static public void LoadPartyDropDownChanged(string selectedName)
     {
+        GameContent.partyCharacters.Clear();
+
+        string path = Application.persistentDataPath + $"/{selectedName}.data";
+        StreamReader sr = new StreamReader(path);
+
+        while (!sr.EndOfStream)
+        {
+            PartyCharacter pc = JsonUtility.FromJson<PartyCharacter>(sr.ReadLine());
+            pc.EquipmentDeserialization();
+            GameContent.partyCharacters.AddLast(pc);
+        }
+
+        Debug.Log($"{selectedName} loaded successfully!");
+
+        sr.Close();
+
         GameContent.RefreshUI();
     }
 
     static public void SavePartyButtonPressed()
     {
+        // Check if party name is null or white space
+        if (string.IsNullOrWhiteSpace(GameContent.GetPartyNameFromInput()))
+        {
+            Debug.LogError("You must enter a valid party name.");
+            return;
+        }
+
+        // Check if party name is already in the list
+        foreach (string partyName  in GetListOfPartyNames())
+        {
+            if (GameContent.GetPartyNameFromInput() == partyName)
+            {
+                Debug.LogError("Party name already exists.");
+                return;
+            }
+        }
+
+        GetListOfPartyNames().Add(GameContent.GetPartyNameFromInput());
+
+        string path = Application.persistentDataPath + $"/{GameContent.GetPartyNameFromInput()}.data";
+        StreamWriter sw = new StreamWriter(path);
+
+        foreach (PartyCharacter pc in GameContent.partyCharacters)
+        {
+            pc.EquipmentSerialization();
+            sw.WriteLine(JsonUtility.ToJson(pc));
+        }
+
+        sw.Close();
+
+        Debug.Log($"{GameContent.GetPartyNameFromInput()} saved successfully.");
+
         GameContent.RefreshUI();
     }
 
