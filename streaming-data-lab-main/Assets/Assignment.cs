@@ -219,6 +219,8 @@ static public class AssignmentPart2
             GameContent.partyCharacters.AddLast(pc);
         }
 
+        currentParty = selectedName;
+
         Debug.Log($"{selectedName} loaded successfully!");
 
         sr.Close();
