@@ -184,6 +184,7 @@ static public class AssignmentPart2
 
     static List<string> listOfPartyNames;
 
+    // To store the current party being displayed
     static string currentParty;
 
     static public void GameStart()
@@ -269,6 +270,7 @@ static public class AssignmentPart2
     {
         string file = Application.persistentDataPath + $"/{currentParty}.data";
 
+        // In case there is no loaded party.
         if (!File.Exists(file))
         {
             Debug.Log("No party to delete.");
